@@ -12,81 +12,116 @@ using std::list;
 using std::thread;
 #include <sstream>
 using std::istringstream;
-#include <mutex>
-using std::mutex;
-using std::unique_lock;
-#include <condition_variable>
-using std::condition_variable;
+
 #include "Auto.h"
 #include "Park.h"
-#include "Date.h" 
+#include "Date_&_hour.h" 
 //#include "global_variables.h"
 
-const int cap{10};
-list<Auto> park1;
-mutex m;
-int i{0};
+Park park1;
+Park park2;
 
-int ingressoUno()
+int ingresso(int id)  //controllare l'id nei casi che serve
 {
-   // open a file in read mode
-   ifstream infile;
-   infile.open("../../input_files/parcheggioUnoIngresso.txt");
-   	
-   if (!infile.is_open()) {
-      cout << "error opening the input file\n";
-      exit(EXIT_FAILURE);
-   }
-
-   string line;
-   while (getline(infile, line))
+   if(id == 1)
    {
-      
-      unique_lock<mutex> mlock(m);
-      istringstream iss(line);
-      int anno_, mese_, giorno_, ora_, minuto_;
-      string targa_;
-      
-      if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
-      Auto car(targa_, ora_, minuto_, {anno_, static_cast<Date::Month>(mese_), giorno_} );
-      park1.push_back(car);
-      cout << car << " IN" << " PARK1" << endl;
-      mlock.unlock();
+      ifstream infile;
+      infile.open("../../input_files/parcheggioUnoIngresso.txt");
+   	
+      if (!infile.is_open()) {
+         cout << "error opening the input file\n";
+         exit(EXIT_FAILURE);
+      }
+
+      string line;
+      while (getline(infile, line))
+      {
+         istringstream iss(line);
+         int anno_, mese_, giorno_, ora_, minuto_;
+         string targa_;
+         if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
+       
+         Auto car(targa_, {anno_, mese_, giorno_, ora_, minuto_}, "IN", "PARK1" );
+         park1.inserisci(car);
+      }
+      infile.close();
+   } else 
+   {
+      ifstream infile;
+      infile.open("../../input_files/parcheggioDueIngresso.txt");
+   	
+      if (!infile.is_open()) {
+         cout << "Error opening the input file\n";
+         exit(EXIT_FAILURE);
+      }
+
+      string line;
+      while (getline(infile, line))
+      {
+         istringstream iss(line);
+         int anno_, mese_, giorno_, ora_, minuto_;
+         string targa_;
+         if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
+       
+         Auto car(targa_, {anno_, mese_, giorno_, ora_, minuto_}, "IN", "PARK2" );
+         park2.inserisci(car);
+      }
+      infile.close();
    }
-
-   // close the opened file.
-   infile.close();
-
+   
    return 0;
 }
 
-int uscitaUno()
+int uscita(int id)
 {  
-   // open a file in read mode
-   ifstream infile;
-   infile.open("../../input_files/parcheggioUnoUscita.txt");
-   	
-   if (!infile.is_open()) {
-      cout << "error opening the input file\n";
-      exit(EXIT_FAILURE);
-   }
-
-   string line;
-   while (getline(infile, line))
+   if(id == 1)
    {
-      unique_lock<mutex> mlock(m);
-      istringstream iss(line);
-      int anno_, mese_, giorno_, ora_, minuto_;
-      string targa_;
-      
-      if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
-      Auto car{targa_, ora_, minuto_, Date{anno_, static_cast<Date::Month>(mese_), giorno_} };
-     // cout << car << " OUT" << " PARK1" << endl;
-      mlock.unlock();
-   }
+      ifstream infile;
+      infile.open("../../input_files/parcheggioUnoUscita.txt");
+   	
+      if (!infile.is_open()) 
+      {
+         cout << "error opening the input file\n";
+         exit(EXIT_FAILURE);
+      }
 
-   // close the opened file.
+      string line;
+      while (getline(infile, line))
+      {
+         istringstream iss(line);
+         int anno_, mese_, giorno_, ora_, minuto_;
+         string targa_;
+      
+         if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
+         Auto car{targa_, {anno_, mese_, giorno_, ora_, minuto_}, "OUT", "PARK1"};
+         park1.rimuovi(car);
+      }
+
+      infile.close();
+   } else 
+   {
+      ifstream infile;
+      infile.open("../../input_files/parcheggioDueUscita.txt");
+   	
+      if (!infile.is_open()) {
+         cout << "error opening the input file\n";
+         exit(EXIT_FAILURE);
+      }
+
+      string line;
+      while (getline(infile, line))
+      {
+         istringstream iss(line);
+         int anno_, mese_, giorno_, ora_, minuto_;
+         string targa_;
+      
+         if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
+         Auto car{targa_, {anno_, mese_, giorno_, ora_, minuto_}, "OUT", "PARK2"};
+         park1.rimuovi(car);
+      }
+
    infile.close();
+   }
 
    return 0;
 }
@@ -95,10 +130,14 @@ int uscitaUno()
 int main()
 {
     
-    thread in_park1(ingressoUno);
-    thread out_park1(uscitaUno);
+   thread in_park1(ingresso, 1);
+   thread out_park1(uscita, 1);
+   thread in_park2{ingresso, 2};
+   thread out_park2{uscita, 2};
 
-    in_park1.join();
-    out_park1.join();
+   in_park1.join();
+   out_park1.join();
+   in_park2.join();
+   out_park2.join();
 
 }

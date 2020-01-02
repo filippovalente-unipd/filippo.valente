@@ -1,27 +1,26 @@
-#ifndef DATE_H
-#define DATE_H
+#ifndef DATE_COMPLETE_H
+#define DATE_COMPLETE_H
 
 #include <ostream>
 
 // simple Date (use Month type)
 class Date {
 public:
-	enum Month {
-		jan=1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
-	};
-
-	
-	Date(int y, Month m, int d);   
+	Date(int y, int m, int d, int hh, int mm);   
 	Date();                        
 
 	int year() const;
-	Month month() const;
+	int month() const;
 	int day() const;
+	int hour() const;
+	int minute() const;
 
 private:
 	int y;      // year
-	Month m;
+	int m;		// month
 	int d;      // day of month
+	int hh;     //hour
+	int mm;		//minute
 };
 
 // operators

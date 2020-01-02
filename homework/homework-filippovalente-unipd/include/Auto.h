@@ -5,23 +5,23 @@
 #include<string>
 using std::string;
 
-#include "Date.h"
+#include "Date_&_hour.h"
 
 class Auto{
 public:
 
-	Auto(string targa_c, int ora, int minuto, Date data);
-	
-	void inserisci(Auto car);
+	Auto(string targa_c, Date data, string in_out, string park1_2);
+	Auto();
+
 	string targa_code() const {return targa;} ;
-	int ora_code() const {return hh;} ;
-	int minuto_code() const {return min;} ;
 	Date data_code() const {return d;} ;
+	string stato_code() const {return stato;} ;
+	string park_code() const {return parcheggio;} ;
 
 private:
 	string targa;
-    int hh, min;
 	Date d;
+	string stato, parcheggio;
 };
 
 // operators

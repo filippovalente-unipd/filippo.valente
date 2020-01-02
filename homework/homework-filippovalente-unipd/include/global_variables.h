@@ -8,7 +8,6 @@ using std::mutex;
 
 extern const int cap{10};
 extern Park park;
-extern mutex m;
 extern int i{0};
 
 #endif 

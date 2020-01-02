@@ -2,7 +2,9 @@
 #ifndef Park_h
 #define Park_h
 
-#include <list> 
+#include<list> 
+#include<mutex>
+#include<condition_variable>
 
 #include "Auto.h"
 //#include "global_variables.h"
@@ -13,14 +15,15 @@ class Park{
         Park();
         
         void inserisci(Auto car);
-        void rimuovi(Park park, Auto car);
+        void rimuovi(Auto car);
 
     private:
+        int i;
+        const int cap{10};
         std::list<Auto> park;
-
+        std::mutex mutex_;
+        std::condition_variable OK_to_park;
+        std::condition_variable New_car;
 };
-
-// operators
-std::ostream& operator<<(std::ostream& os, const Park& d);
 
 #endif

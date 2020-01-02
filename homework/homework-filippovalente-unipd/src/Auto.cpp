@@ -2,25 +2,22 @@
 using std::ostream;
 
 #include "Auto.h"
-#include "Date.h"
+#include "Date_&_hour.h"
 
 
-Auto::Auto(string targa_c, int ora, int minuto, Date data)
-	 :targa{targa_c}, hh{ora}, min{minuto}, d{Date()}
+Auto::Auto(string targa_c, Date data, string in_out, string park1_2)
+	 :targa{targa_c}, d{data}, stato{in_out}, parcheggio{park1_2}
 {}
 
-void Auto::inserisci(Auto car)
-{
-     
-}
+Auto::Auto()
+     :targa{"XX---YY"}, d{Date()}, stato{"--"}, parcheggio{"PARK-"}
+{}
 
-// operators
+
 ostream& operator<<(ostream& os, const Auto& p)
 {
 	return os << ' ' << p.data_code()
-              << ' ' << p.ora_code()
-              << ' ' << p.minuto_code()
-              << ' ' << p.targa_code();
+               << ' ' << p.targa_code()
+               << ' ' << p.stato_code()
+               << ' ' << p.park_code() << std::endl;
 }
-
-
