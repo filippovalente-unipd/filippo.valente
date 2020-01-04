@@ -14,6 +14,7 @@ class Park{
         Park(std::list<Auto> macchina);
         Park();
         
+        list<Auto>::iterator cerca(Auto car);
         void inserisci(Auto car);
         void rimuovi(Auto car);
 

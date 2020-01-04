@@ -23,43 +23,54 @@ Park::Park()
      :park{Auto()}
 {}
 
+//search a car in the list, returning an iterator on the position of the car (if its found)
+list<Auto>::iterator Park::cerca(Auto car)
+{
+     list<Auto>::iterator pos;
+     for(pos = park.begin(); pos != park.end(); ++pos)
+     {
+          if( (*pos).targa_code()==car.targa_code() )
+          {
+               return pos;
+          }
+     } 
+
+     return park.end();
+}
+
 //insert a car into the park
 void Park::inserisci(Auto car)
 {
      unique_lock<mutex> mlock(mutex_);
-     if(i != cap)
+     if(i == cap)
      {
-          park.push_back(car);
-          i++;
-          New_car.notify_one();
-          cout << car;
-     } else
-     {
-          cout << "PARK1 is full." << endl;
+          cout << " PARK1 is full." << endl;
           OK_to_park.wait(mlock);
      } 
+     
+     //cout << car;   
+     park.push_back(car);
+     i++;
+     mlock.unlock();
+     New_car.notify_one();
 }
 
 //erase a car from the list, when it leaves the park
 void Park::rimuovi(Auto car)
 {
      unique_lock<mutex> mlock(mutex_);
-     list<Auto>::iterator pos;
-     if(i == 0)
-          New_car.wait(mlock);
-     else
-     {
-          for(pos = park.begin(); pos != park.end(); ++pos)
-          {
-               if( (*pos).targa_code()==car.targa_code() )
-               {
-                    list<Auto>::iterator v = park.erase(pos);
-                    i--;
-                    cout << car;
-                    OK_to_park.notify_one();
-                    break;
-               }   
-          }
-     } 
-}
+    
+     list<Auto>::iterator pos = cerca(car);
 
+     if(pos == park.end() )
+     {
+          pos=park.begin();
+          New_car.wait(mlock);
+     }
+
+     //cout << car;
+     park.erase(pos);
+     i--;
+     mlock.unlock();
+     OK_to_park.notify_one();
+}

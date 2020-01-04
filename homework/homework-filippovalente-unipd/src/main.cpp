@@ -12,6 +12,9 @@ using std::list;
 using std::thread;
 #include <sstream>
 using std::istringstream;
+#include <mutex>
+using std::mutex;
+using std::unique_lock;
 
 #include "Auto.h"
 #include "Park.h"
@@ -20,6 +23,7 @@ using std::istringstream;
 
 Park park1;
 Park park2;
+mutex output;
 
 int ingresso(int id)  //controllare l'id nei casi che serve
 {
@@ -40,9 +44,13 @@ int ingresso(int id)  //controllare l'id nei casi che serve
          int anno_, mese_, giorno_, ora_, minuto_;
          string targa_;
          if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
-       
+
+
          Auto car(targa_, {anno_, mese_, giorno_, ora_, minuto_}, "IN", "PARK1" );
          park1.inserisci(car);
+         output.lock();
+         cout << car;
+         output.unlock();
       }
       infile.close();
    } else 
@@ -65,6 +73,9 @@ int ingresso(int id)  //controllare l'id nei casi che serve
        
          Auto car(targa_, {anno_, mese_, giorno_, ora_, minuto_}, "IN", "PARK2" );
          park2.inserisci(car);
+         output.lock();
+         cout << car;
+         output.unlock();
       }
       infile.close();
    }
@@ -95,6 +106,9 @@ int uscita(int id)
          if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
          Auto car{targa_, {anno_, mese_, giorno_, ora_, minuto_}, "OUT", "PARK1"};
          park1.rimuovi(car);
+         output.lock();
+         cout << car;
+         output.unlock();
       }
 
       infile.close();
@@ -118,9 +132,12 @@ int uscita(int id)
          if (!(iss >> targa_ >> anno_ >> mese_ >> giorno_ >> ora_ >> minuto_)) { break; } // error
          Auto car{targa_, {anno_, mese_, giorno_, ora_, minuto_}, "OUT", "PARK2"};
          park1.rimuovi(car);
+         output.lock();
+         cout << car;
+         output.unlock();
       }
 
-   infile.close();
+      infile.close();
    }
 
    return 0;
@@ -129,15 +146,25 @@ int uscita(int id)
 
 int main()
 {
-    
+   try 
+   {
    thread in_park1(ingresso, 1);
    thread out_park1(uscita, 1);
-   thread in_park2{ingresso, 2};
-   thread out_park2{uscita, 2};
+   //thread in_park2{ingresso, 2};
+   //thread out_park2{uscita, 2};
 
    in_park1.join();
    out_park1.join();
-   in_park2.join();
-   out_park2.join();
+   //in_park2.join();
+   //out_park2.join();
+   }
+   catch (std::exception const &exc)
+   {
+      std::cerr << "Exception caught " << exc.what() << endl;
+   }
+   catch (...)
+   {
+      std::cerr << "Unknown exception caught" << endl;
+   }
 
 }
