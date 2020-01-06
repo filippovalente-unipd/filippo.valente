@@ -8,23 +8,24 @@ using std::string;
 #include "Date_&_hour.h"
 
 class Auto{
-public:
+	public:
+		//costruttore
+		Auto(string targa_c, Date data, string in_out, string park1_2);
+		Auto();
 
-	Auto(string targa_c, Date data, string in_out, string park1_2);
-	Auto();
+		//'get functions'
+		string targa_code() const {return targa;} ;
+		Date data_code() const {return d;} ;
+		string stato_code() const {return stato;} ;
+		string park_code() const {return parcheggio;} ;
 
-	string targa_code() const {return targa;} ;
-	Date data_code() const {return d;} ;
-	string stato_code() const {return stato;} ;
-	string park_code() const {return parcheggio;} ;
-
-private:
-	string targa;
-	Date d;
-	string stato, parcheggio;
+	private:
+		string targa;
+		Date d;
+		string stato, parcheggio;
 };
 
-// operators
+//overload dell'operatore '<<' per poter inviare a schermo i dati dell'auto
 std::ostream& operator<<(std::ostream& os, const Auto& d);
 
 #endif

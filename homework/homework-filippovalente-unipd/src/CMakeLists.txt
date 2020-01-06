@@ -1,5 +1,4 @@
 find_package(Threads)
-add_executable(main main.cpp Auto.cpp Park.cpp Date_&_hour.cpp)
-target_include_directories(main PUBLIC ../include)
-target_link_libraries(main ${CMAKE_THREAD_LIBS_INIT})
-target_compile_options(main PRIVATE -Wall)
+add_executable(main main.cpp)
+
+target_link_libraries(main PRIVATE mylib ${CMAKE_THREAD_LIBS_INIT})

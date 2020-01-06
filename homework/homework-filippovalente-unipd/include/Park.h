@@ -7,24 +7,43 @@
 #include<condition_variable>
 
 #include "Auto.h"
-//#include "global_variables.h"
 
 class Park{
     public:
+        //costruttore
         Park(std::list<Auto> macchina);
         Park();
         
-        list<Auto>::iterator cerca(Auto car);
-        void inserisci(Auto car);
-        void rimuovi(Auto car);
+        //funzioni per l'inserimento e la cancellazione
+        //delle auto dal parcheggio
+        list<Auto>::iterator cerca(const Auto& car);
+        void inserisci(const Auto& car, int id);
+        void rimuovi_da1(const Auto& car, int id);
+        void rimuovi_da2(const Auto& car, int id);
 
     private:
-        int i;
-        const int cap{10};
+        //dati membro
+        //variabili che tengono conto delle macchine nel parcheggio
+        int m_in1=0;
+        int m_in2=0;
+
+        //capacità del parcheggio (10 posti di default)
+        const int cap=10;
+
+        //container usato: lista
         std::list<Auto> park;
+
+        //mutex per la protezione delle risorse condivise
         std::mutex mutex_;
-        std::condition_variable OK_to_park;
-        std::condition_variable New_car;
+
+        //varibili condizione
+        //varibili per bloccare l'inserimento in caso di parcheggio pieno
+        std::condition_variable OK_to_park_in1;
+        std::condition_variable OK_to_park_in2;
+
+        //variabili per bloccare l'uscita, in caso di parcheggio vuoto
+        std::condition_variable New_car_in1;
+        std::condition_variable New_car_in2;
 };
 
 #endif

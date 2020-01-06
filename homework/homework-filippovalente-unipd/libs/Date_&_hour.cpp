@@ -4,13 +4,12 @@ using std::ostream;
 using std::cerr;
 #include "Date_&_hour.h"
 
-// helper functions
-
-// check for valid date and initialise
+//inizializzare la data:
 Date::Date(int yy, int mm, int dd, int ora, int minuto)
 	:y{yy}, m{mm}, d{dd}, hh{ora}, mm{minuto}
 {}
 
+//costruttore di default:
 const Date& default_date()
 {
 	static Date dd{2001,1,1,00,00};   // start of 21st century
@@ -26,37 +25,7 @@ Date::Date()
 {
 }
 
-// return year
-int Date::year() const
-{
-	return y;
-}
-
-// return month
-int Date::month() const
-{
-	return m;
-}
-
-// return day of month
-int Date::day() const
-{
-	return d;
-}
-
-// return hour 
-int Date::hour() const
-{
-	return hh;
-}
-
-// return minute
-int Date::minute() const
-{
-	return mm;
-}
-
-// operators
+// overload dell'operatore per stampa a video
 ostream& operator<<(ostream& os, const Date& d)
 {
 	return os << '{' << d.year()

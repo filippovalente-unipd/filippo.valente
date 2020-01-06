@@ -3,27 +3,30 @@
 
 #include <ostream>
 
-// simple Date (use Month type)
+//Classe presa dal file 'Date05' mostrato in classe e
+//modificata aggiungendo ora e minuto
 class Date {
-public:
-	Date(int y, int m, int d, int hh, int mm);   
-	Date();                        
+	public:
+		//costruttore
+		Date(int y, int m, int d, int hh, int mm);   
+		Date();                        
 
-	int year() const;
-	int month() const;
-	int day() const;
-	int hour() const;
-	int minute() const;
+		//'get functions'
+		int year() const {return y;};
+		int month() const {return m;};
+		int day() const {return d;};
+		int hour() const {return hh;};
+		int minute() const {return mm;};
 
-private:
-	int y;      // year
-	int m;		// month
-	int d;      // day of month
-	int hh;     //hour
-	int mm;		//minute
+	private:
+		int y;      //anno
+		int m;		//mese
+		int d;      //giorno
+		int hh;     //ora
+		int mm;		//minuto
 };
 
-// operators
+//overload dell'operatore '<<' per poter stampare la data
 std::ostream& operator<<(std::ostream& os, const Date& d);
 
 #endif
